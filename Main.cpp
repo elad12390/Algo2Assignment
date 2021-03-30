@@ -2,10 +2,9 @@
 #include <vector>
 #include<string>
 
-
 class Graph {
 public:
-	bool** adjacencyMatrix;
+	bool** adjacencyMatrix; 
 	int size;
 
 	Graph(int vertexNumber) {
@@ -15,11 +14,13 @@ public:
 			adjacencyMatrix[i] = new bool[vertexNumber]();
 	}
 
-	Graph* randomize(float p) {
+	
+	Graph* randomize(float p) { 
 		srand(time(NULL));
 		for (size_t i = 1; i < this->size; i++)
-			for (size_t j = 0; j < i; j++)
-				adjacencyMatrix[j][i] = adjacencyMatrix[i][j] = ((float)rand()/RAND_MAX) < p;
+			for (size_t j = 0; j < i; j++)						
+				//generate random number between 0 to 1. If the number is smaller than p, we add the edge.
+				adjacencyMatrix[j][i] = adjacencyMatrix[i][j] = ((float)rand()/RAND_MAX) < p; 
 
 		return this;
 	}
