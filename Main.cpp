@@ -8,7 +8,7 @@ using namespace std;
 using namespace std::chrono;
 
 template <class T>
-using vector2D = vector<vector<T>*>;
+using vector2D = vector<vector<T>>;
 
 
 class ListGraph {
@@ -21,23 +21,15 @@ public:
 		this->vertex_count = v;
 		for (size_t i = 0; i < this->vertex_count; i++)
 		{
-			this->adj.push_back(new vector<int>(this->vertex_count));
+			vector<int> v(this->vertex_count);
+			this->adj.push_back(v);
 		}
-	}
-
-	~ListGraph() {
-		for (size_t i = 0; i < adj.size(); i++)
-		{
-			this->adj.at(i)->clear();
-			delete this->adj.at(i);
-		}
-		this->adj.clear();
 	}
 
 	// O(1)
 	ListGraph& addEdge(int source, int destination) {
-		this->adj.at(source)->push_back(destination);
-		this->adj.at(destination)->push_back(source);
+		this->adj.at(source).push_back(destination);
+		this->adj.at(destination).push_back(source);
 		return *this;
 	}
 
@@ -66,11 +58,11 @@ std::ostream& operator<<(std::ostream& os, const ListGraph& graph)
 {
 	for (size_t i = 0; i < graph.vertex_count; i++)
 	{
-		int vec_size = graph.adj.at(i)->size();
+		int vec_size = graph.adj.at(i).size();
 
 		os << "[";
 		for (size_t j = 0; j < vec_size; j++) {
-			os << graph.adj.at(i)->at(j);
+			os << graph.adj.at(i).at(j);
 			if (j < (vec_size - 1))
 				os << ",";
 		}

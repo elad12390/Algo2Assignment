@@ -14,6 +14,15 @@ public:
 			adjacencyMatrix[i] = new bool[vertex_count]();
 	}
 
+	~MatrixGraph()
+	{
+		for (size_t i = 0; i < this->vertex_count; i++)
+		{
+			delete[] adjacencyMatrix[i];
+		}
+		delete[] adjacencyMatrix;
+	}
+
 	
 	MatrixGraph* randomize(float p) {
 		srand(time(NULL));
