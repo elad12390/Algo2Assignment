@@ -4,11 +4,11 @@
 #include <chrono>
 #include <future>
 
-using namespace std;
-using namespace std::chrono;
+template <class T>
+using array_list = std::vector<T>;
 
 template <class T>
-using vector2D = vector<vector<T>>;
+using vector2D = array_list<array_list<T>>;
 
 
 class ListGraph {
@@ -21,7 +21,7 @@ public:
 		this->vertex_count = v;
 		for (size_t i = 0; i < this->vertex_count; i++)
 		{
-			vector<int> v(this->vertex_count);
+			std::vector<int> v(this->vertex_count);
 			this->adj.push_back(v);
 		}
 	}
@@ -56,15 +56,15 @@ public:
 
 std::ostream& operator<<(std::ostream& os, const ListGraph& graph)
 {
-	for (size_t i = 0; i < graph.vertex_count; i++)
+	for (auto& col : graph.adj)
 	{
-		int vec_size = graph.adj.at(i).size();
-
 		os << "[";
-		for (size_t j = 0; j < vec_size; j++) {
-			os << graph.adj.at(i).at(j);
-			if (j < (vec_size - 1))
+		int i = 0;
+		for (auto& row : col) {
+			os << row;
+			if (i < col.size())
 				os << ",";
+			i++;
 		}
 		os << "]" << std::endl;
 	}
@@ -79,11 +79,11 @@ void run_test(double p) {
 int main() {
 	srand(time(NULL));
 
-	cout << "Starting..." << endl;
+	std::cout << "Starting..." << std::endl;
 
 
-	for (int i = 0; i < 500; i += 1) {
-		auto start = high_resolution_clock::now();
+	for (int i = 0; i < 500; i++) {
+		auto start = std::chrono::high_resolution_clock::now();
 
 		auto task1 = std::async(run_test, 0.1);
 		auto task2 = std::async(run_test, 0.2);
@@ -95,8 +95,9 @@ int main() {
 		auto task8 = std::async(run_test, 0.8);
 		auto task9 = std::async(run_test, 0.9);
 
-		auto stop = high_resolution_clock::now();
-		cout << "finished test number " << i << " at " << duration_cast<microseconds>(stop - start).count() << " microseconds" << endl;
+		auto stop = std::chrono::high_resolution_clock::now();
+		std::cout << "finished test number " << i << " at " << 
+			std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count() << " microseconds" << std::endl;
 	}
 	return 0;
 }
