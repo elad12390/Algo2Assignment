@@ -80,8 +80,6 @@ public:
 				}
 			}
 		}
-			
-
 		return *this;
 	}
 
@@ -112,7 +110,6 @@ public:
 			q.pop();
 			colors.at(currentNode) = BFS_COLOR::BLACK;
 		}
-
 		return dist;
 	}
 
@@ -129,15 +126,30 @@ public:
 				if (item > max) { max = item; }
 			}
 		}
-
 		return max;
+	}
 
+	bool Is_Isolated() {
+		for (auto item : this->adj)
+		{
+			if (item.empty())
+				return 1;
+		}
+		return 0;
+	}
+
+	bool connectivity() {
+		auto dist = BFS(0);
+		for (auto item : dist)
+		{
+			if (item == -1)
+				return 0;
+		}
+		return 1;
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const ListGraph& dt);
-	
 };
-
 
 std::ostream& operator<<(std::ostream& os, const ListGraph& graph)
 {
@@ -176,10 +188,8 @@ void print_progress_bar(float progress) {
 	}
 	std::cout << "] " << int(progress * 100.0) << " %\r";
 	std::cout.flush();
-
 	std::cout << std::endl;
 }
-
 
 int main()
 {
@@ -221,7 +231,6 @@ int main()
 		auto task8 = std::async(run_test, 0.75);
 		auto task9 = std::async(run_test, 0.8);
 		auto task10 = std::async(run_test, 0.9);
-
 		task10.wait();
 		auto stop = std::chrono::high_resolution_clock::now();
 		print_progress_bar((float)i / 500);
