@@ -87,18 +87,11 @@ public:
 
 	std::vector<int> BFS(int startNode)
 	{
-		std::vector<BFS_COLOR> colors(this->vertex_count);
+		std::vector<BFS_COLOR> colors(this->vertex_count, BFS_COLOR::WHITE);
 		std::vector<int> dist(this->vertex_count, -1);
-		//std::vector<int> parent(this->vertex_count, -1);
-
-		for (auto& color : colors)
-		{
-			color = BFS_COLOR::WHITE;
-		}
 
 		colors.at(startNode) = BFS_COLOR::GREY;
 		dist.at(startNode) = 0;
-		//parent.at(startNode) = -1;
 
 		std::queue<int> q;
 		q.push(startNode);
@@ -113,8 +106,6 @@ public:
 				{
 					colors.at(node) = BFS_COLOR::GREY;
 					dist.at(node) = dist.at(currentNode) + 1;
-					//parent.at(node) = currentNode;
-
 					q.push(node);
 				}
 			}
@@ -217,32 +208,23 @@ int main()
 
 
 	auto start = std::chrono::high_resolution_clock::now();
-	for (int i = 0; i < 250; i++)
+	for (int i = 0; i < 500; i++)
 	{
 		
 		auto task1 = std::async(run_test, 0.1);
 		auto task2 = std::async(run_test, 0.2);
-		auto task3 = std::async(run_test, 0.3);
-		auto task4 = std::async(run_test, 0.4);
-		auto task5 = std::async(run_test, 0.5);
+		auto task3 = std::async(run_test, 0.25);
+		auto task4 = std::async(run_test, 0.3);
+		auto task5 = std::async(run_test, 0.4);
 		auto task6 = std::async(run_test, 0.6);
 		auto task7 = std::async(run_test, 0.7);
-		auto task8 = std::async(run_test, 0.8);
-		auto task9 = std::async(run_test, 0.9);
+		auto task8 = std::async(run_test, 0.75);
+		auto task9 = std::async(run_test, 0.8);
+		auto task10 = std::async(run_test, 0.9);
 
-		auto task10 = std::async(run_test, 0.1);
-		auto task12 = std::async(run_test, 0.2);
-		auto task13 = std::async(run_test, 0.3);
-		auto task14 = std::async(run_test, 0.4);
-		auto task15 = std::async(run_test, 0.5);
-		auto task16 = std::async(run_test, 0.6);
-		auto task17 = std::async(run_test, 0.7);
-		auto task18 = std::async(run_test, 0.8);
-		auto task19 = std::async(run_test, 0.9);
-
-		task19.wait();
+		task10.wait();
 		auto stop = std::chrono::high_resolution_clock::now();
-		print_progress_bar((float)i / 250);
+		print_progress_bar((float)i / 500);
 		std::cout << (((stop - start) / 1000000ll)).count() << " milliseconds" << std::endl;
 	}
 	return 0;
