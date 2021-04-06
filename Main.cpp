@@ -47,7 +47,7 @@
 			const int& get_size();
 			ListGraph& addEdge(int source, int destination);
 			ListGraph& randomize(float p);
-			array_list<int> BFS(int startNode);
+			std::unique_ptr<array_list<int>> BFS(int startNode);
 			int calc_diameter();
 			bool is_isolated();
 			bool connectivity();
@@ -170,13 +170,13 @@
 			return *this;
 		}
 
-		array_list<int> ListGraph::BFS(int startNode)
+		std::unique_ptr<array_list<int>> ListGraph::BFS(int startNode)
 		{
 			array_list<BFS_COLOR> colors(this->vertex_count, BFS_COLOR::WHITE);
-			array_list<int> dist(this->vertex_count, -1);
+			std::unique_ptr<array_list<int>> dist(new array_list<int>(this->vertex_count, -1));
 
 			colors.at(startNode) = BFS_COLOR::GREY;
-			dist.at(startNode) = 0;
+			dist->at(startNode) = 0;
 
 			std::queue<int> q;
 			q.push(startNode);
@@ -184,13 +184,13 @@
 			while (!q.empty())
 			{
 				auto currentNode = q.front();
-				for (auto& node : this->adj.at(currentNode))
+				for (const auto& node : this->adj.at(currentNode))
 				{
 					if (node < 0) continue;
 					if (colors.at(node) == BFS_COLOR::WHITE)
 					{
 						colors.at(node) = BFS_COLOR::GREY;
-						dist.at(node) = dist.at(currentNode) + 1;
+						dist->at(node) = dist->at(currentNode) + 1;
 						q.push(node);
 					}
 				}
@@ -207,7 +207,7 @@
 			for (size_t i = 0; i < this->vertex_count; i++)
 			{
 				auto dist = BFS(i);
-				for (auto item : dist)
+				for (const auto& item : *dist)
 				{
 					if (item == -1) return -1;
 					if (item > max) { max = item; }
@@ -218,7 +218,7 @@
 
 		bool ListGraph::is_isolated()
 		{
-			for (auto item : this->adj)
+			for (const auto& item : this->adj)
 			{
 				if (item.empty())
 					return 1;
@@ -229,7 +229,7 @@
 		bool ListGraph::connectivity()
 		{
 			auto dist = BFS(0);
-			for (auto item : dist)
+			for (const auto& item : *dist)
 			{
 				if (item == -1)
 					return false;
@@ -426,7 +426,7 @@
 
 		void run_tests()
 		{
-			srand(time(NULL));
+			std::srand(std::time(NULL));
 
 			int V = 1000;
 
