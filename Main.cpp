@@ -141,6 +141,14 @@
 		void test_number_three(array_list<float>* thresholdProbabilities, int resultCounter[10]);
 
 		/**
+		* Creates a csv file of the test results
+		* @param name - The name of the file to be saved.
+		* @param pArr - The array of the probabilities tested with.
+		* @param results[10] - An array of size 10 of the results for each probability.
+		*/
+		void save_csv_test_file(std::string name, array_list<float>* pArr, int results[10]);
+
+		/**
 		* Serves as the main function to run all tests in series.
 		*/
 		void run_tests();
@@ -485,18 +493,18 @@
 		void save_csv_test_file(std::string name, array_list<float>* pArr, int results[10])
 		{
 			const char SEPERATOR = ',';
-			std::fstream fout;
-			fout.open(name + "_test.csv", std::ios::in | std::ios::app);
+			std::ofstream fout;
+			fout.open(name + "_test.csv", std::ios::out | std::ofstream::trunc);
 
 			// first line
-			fout << "P" << SEPERATOR;
+			fout << "Probability" << SEPERATOR;
 			for (auto p : *pArr)
 			{
 				fout << p << SEPERATOR;
 			}
 			fout << std::endl;
 
-			fout << "simulation results" << SEPERATOR;
+			fout << "Simulation results" << SEPERATOR;
 			for (int i = 0; i < 10; i++)
 			{
 				fout << ((float)(results[i]) / 500) << SEPERATOR;
