@@ -10,14 +10,24 @@
 
 	// ******** Templates *********** //
 
+		/**
+		* This is an std::vector - Because of confusion with math vectors i used an alias
+		*/
 		template <class T>
 		using array_list = std::vector<T>;
 
+		/**
+		* This is a list of lists, for comfort purposes.
+		*/
 		template <class T>
-		using vector2D = array_list<array_list<T>>;
+		using array_list_2D = array_list<array_list<T>>;
 
+		/**
+		* Print a given array_list.
+		* @params vec - The array list to print
+		*/
 		template <class T>
-		void print_vector(array_list<T> vec);
+		void print_array_list(array_list<T> list);
 
 
 	// ******** Classes ************* //
@@ -30,6 +40,7 @@
 			BLACK = 3
 		};
 
+		// deprecated (because tests don't use bfs colors array and parent array)
 		struct BFSResult
 		{
 			array_list<BFS_COLOR> colors;
@@ -39,32 +50,100 @@
 
 		class ListGraph
 		{
-			vector2D<int> adj;
+			array_list_2D<int> adj;
 			int vertex_count = 0;
 		public:
 
+			/**
+			* Creates a graph with [v] edges.
+			* @param v - number of edges for the new graph
+			*/
 			ListGraph(int v);
+
+			/**
+			* Getter function for the vertex number.
+			* @returns const int& - readonly property of the vertex number.
+			*/
 			const int& get_size();
+
+			/**
+			* Add an edge from specified source to destination
+			* 
+			* @param (int) source - The source node
+			* @param (int) destination - The source destination
+			* 
+			* @return ListGraph& - returns a reference to the current graph for chaining commands
+			*/
 			ListGraph& addEdge(int source, int destination);
+
+			/**
+			* Randomize the current graph
+			* 
+			* @param (float) p - the probability of an edge to be created between two vertice
+			* 
+			* @return ListGraph& - returns a reference to the current graph for chaining commands
+			*/
 			ListGraph& randomize(float p);
+
+			/**
+			* Run BFS algorithm on the current graph
+			* If the graph is empty it returns null.
+			* 
+			* @param startNode - where to start the BFS algorithm from
+			* 
+			* @returns std::unique_ptr<array_list<int>> - a smart pointer containing a distance array from the start node to each other nodes
+			*/
 			std::unique_ptr<array_list<int>> BFS(int startNode);
+
+			/**
+			* Calculates the diameter of the current graph
+			* @returns int - The diameter of the graph OR (0) if the graph is empty
+			*/
 			int calc_diameter();
+
+			/**
+			* Checks if there's a node with no connections to it.
+			* @returns bool - true if found at least one node
+			*/
 			bool is_isolated();
+
+			/**
+			* Checks if the graph has only one connected component
+			* @returns True if the graph is Connected.
+			*/
 			bool connectivity();
+
 			friend std::ostream& operator<<(std::ostream& os, const ListGraph& dt);
 		};
 
 
 	// ******** Tests *************** //
 
+		/**
+		* Prints a nice loading bar.
+		* @param progress - a number between 0 to 1 that represents the current progress.
+		*/
 		void print_progress_bar(float progress);
+
+		/**
+		* Creates an array of 10 probabilities
+		* @param threshold - the probability to generate according to.
+		* @returns A smart pointer to an array with the first 5 numbers smaller than [threshold] and last 5 numbers larger than [threshold]
+		*/
 		std::unique_ptr<array_list<float>> create_threshold_probabilities(float threshold);
+
 		void run_test_one(double p, bool expectedResult, int* resultCounter);
 		void test_number_one(array_list<float>* thresholdProbabilities, int resultCounter[10]);
+
 		void run_test_two(double p, bool largerThanTwo, int* resultCounter);
 		void test_number_two(array_list<float>* thresholdProbabilities, int resultCounter[10]);
+
 		void run_test_three(double p, bool expectedResult, int* resultCounter);
 		void test_number_three(array_list<float>* thresholdProbabilities, int resultCounter[10]);
+
+		/**
+		* Serves as the main function to run all tests in series.
+		*/
 		void run_tests();
 
 
@@ -78,14 +157,14 @@
 	// ******** Print Functions ************* //
 
 		template <class T>
-		void print_vector(array_list<T> vec)
+		void print_array_list(array_list<T> list)
 		{
 			std::cout << "[";
 			int i = 0;
-			for (auto item : vec)
+			for (auto item : list)
 			{
 				std::cout << item;
-				if (i < (vec.size() - 1))
+				if (i < (list.size() - 1))
 				{
 					std::cout << ",";
 				}
@@ -172,6 +251,9 @@
 
 		std::unique_ptr<array_list<int>> ListGraph::BFS(int startNode)
 		{
+			if (this->vertex_count == 0) return nullptr;
+
+
 			array_list<BFS_COLOR> colors(this->vertex_count, BFS_COLOR::WHITE);
 			std::unique_ptr<array_list<int>> dist(new array_list<int>(this->vertex_count, -1));
 
@@ -202,6 +284,7 @@
 
 		int ListGraph::calc_diameter()
 		{
+			if (this->vertex_count == 0) return 0;
 			auto max = 0;
 
 			for (size_t i = 0; i < this->vertex_count; i++)
@@ -210,7 +293,7 @@
 				for (const auto& item : *dist)
 				{
 					if (item == -1) return -1;
-					if (item > max) { max = item; }
+					max = std::max(max, item);
 				}
 			}
 			return max;
@@ -456,12 +539,14 @@
 			test_number_three(threshhold3Probabilities.get(), testThreeResults);
 			save_csv_test_file("isolated", threshhold3Probabilities.get(), testThreeResults);
 		}
+		
+
+	// ******** Main ************************ //
+
+	int main()
+	{
+		run_tests();
+		return 0;
+	}
 
 // ******************************** Definitions End ****************************** //
-
-
-int main()
-{
-	run_tests();
-	return 0;
-}
