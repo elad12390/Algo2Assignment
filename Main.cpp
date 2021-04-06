@@ -77,10 +77,9 @@
 			ListGraph& addEdge(int source, int destination);
 
 			/**
-			* Randomize the current graph
+			* Randomize the current graph - takes the lower half of the matrix and inserts it (which means (V^2)/2 - V) => O(V^2)
 			* 
 			* @param (float) p - the probability of an edge to be created between two vertice
-			* 
 			* @return ListGraph& - returns a reference to the current graph for chaining commands
 			*/
 			ListGraph& randomize(float p);
@@ -232,7 +231,6 @@
 			return *this;
 		}
 
-		// takes the lower half of the matrix and inserts it (which means (V^2)/2 - V) => O(V^2)
 		ListGraph& ListGraph::randomize(float p)
 		{
 			for (size_t i = 1; i < this->vertex_count; i++)
