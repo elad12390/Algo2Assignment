@@ -261,7 +261,7 @@
 
 
 			array_list<BFS_COLOR> colors(this->vertex_count, BFS_COLOR::WHITE);
-			std::unique_ptr<array_list<int>> dist(new array_list<int>(this->vertex_count, -1));
+			std::unique_ptr<array_list<int>> dist = std::make_unique<array_list<int>>(this->vertex_count, -1);
 
 			colors.at(startNode) = BFS_COLOR::GREY;
 			dist->at(startNode) = 0;
@@ -331,7 +331,7 @@
 
 		std::unique_ptr<array_list<float>> create_threshold_probabilities(float threshold)
 		{
-			std::unique_ptr<array_list<float>> list(new array_list<float>(10));
+			std::unique_ptr<array_list<float>> list = std::make_unique<array_list<float>>(10);
 			auto tenPercent = threshold / 10;
 
 			// smaller than
