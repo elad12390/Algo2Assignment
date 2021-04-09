@@ -6,6 +6,11 @@
 #include <unordered_set>
 #include <queue>
 #include <fstream>
+
+
+#define PRINTLN(x) std::cout << x << std::endl
+#define PRINT_EMPTY_LINE() std::cout << std::endl
+
 // ******************************** Declarations ****************************** //
 
 	// ******** Templates *********** //
@@ -200,7 +205,7 @@
 
 		void print_progress_bar(float progress)
 		{
-			int barWidth = 70;
+			int barWidth = 100;
 
 			std::cout << "[";
 			int pos = barWidth * progress;
@@ -335,18 +340,13 @@
 			auto tenPercent = threshold / 10;
 
 			// smaller than
-			list.get()->at(0) = (tenPercent * 2);
-			list.get()->at(1) = (tenPercent * 4);
-			list.get()->at(2) = (tenPercent * 5);
-			list.get()->at(3) = (tenPercent * 6);
-			list.get()->at(4) = (tenPercent * 8);
+			// start from 50% climb up to 90%
+			for (size_t i = 0; i < 5; i++)
+				list.get()->at(i) = (tenPercent * 5 + tenPercent * i);
 
-			// larger than
-			list.get()->at(5) = (tenPercent * 12);
-			list.get()->at(6) = (tenPercent * 14);
-			list.get()->at(7) = (tenPercent * 15);
-			list.get()->at(8) = (tenPercent * 16);
-			list.get()->at(9) = (tenPercent * 18);
+			// start from 110% climb up to 150%
+			for (size_t i = 5; i < 10; i++)
+				list.get()->at(i) = (tenPercent * 6 + tenPercent * i);
 
 			return list;
 		}
@@ -363,37 +363,25 @@
 		void test_number_one(array_list<float>* thresholdProbabilities, int resultCounter[10])
 		{
 			if (thresholdProbabilities->size() < 10) return;
-			const float prob1 = thresholdProbabilities->at(0);
-			const float prob2 = thresholdProbabilities->at(1);
-			const float prob3 = thresholdProbabilities->at(2);
-			const float prob4 = thresholdProbabilities->at(3);
-			const float prob5 = thresholdProbabilities->at(4);
-			const float prob6 = thresholdProbabilities->at(5);
-			const float prob7 = thresholdProbabilities->at(6);
-			const float prob8 = thresholdProbabilities->at(7);
-			const float prob9 = thresholdProbabilities->at(8);
-			const float prob10 = thresholdProbabilities->at(9);
-
 
 			auto start = std::chrono::high_resolution_clock::now();
+			std::future<void> operations[10];
+			
 			for (int i = 0; i < 500; i++)
 			{
-				auto task1 = std::async(run_test_one, prob1, false, &(resultCounter[0]));
-				auto task2 = std::async(run_test_one, prob2, false, &(resultCounter[1]));
-				auto task3 = std::async(run_test_one, prob3, false, &(resultCounter[2]));
-				auto task4 = std::async(run_test_one, prob4, false, &(resultCounter[3]));
-				auto task5 = std::async(run_test_one, prob5, false, &(resultCounter[4]));
+				for (size_t i = 0; i < 5; i++)
+				{
+					operations[i] = std::async(run_test_one, (*thresholdProbabilities)[i], false, &(resultCounter[i]));
+				}
+				for (size_t i = 5; i < 10; i++)
+				{
+					operations[i] = std::async(run_test_one, (*thresholdProbabilities)[i], true, &(resultCounter[i]));
+				}
 
-				auto task6 = std::async(run_test_one, prob6, true, &(resultCounter[5]));
-				auto task7 = std::async(run_test_one, prob7, true, &(resultCounter[6]));
-				auto task8 = std::async(run_test_one, prob8, true, &(resultCounter[7]));
-				auto task9 = std::async(run_test_one, prob9, true, &(resultCounter[8]));
-				auto task10 = std::async(run_test_one, prob10, true, &(resultCounter[9]));
-
-				task10.wait();
 				auto stop = std::chrono::high_resolution_clock::now();
 				print_progress_bar((float)i / 500);
-				std::cout << (((stop - start) / 1000000ll)).count() << " milliseconds" << std::endl;
+				PRINTLN("finished 10 operations in " << (((stop - start) / 1000000ll)).count() << " milliseconds");
+				start = std::chrono::high_resolution_clock::now();
 			}
 		}
 
@@ -410,37 +398,24 @@
 		void test_number_two(array_list<float>* thresholdProbabilities, int resultCounter[10])
 		{
 			if (thresholdProbabilities->size() < 10) return;
-			const float prob1 = thresholdProbabilities->at(0);
-			const float prob2 = thresholdProbabilities->at(1);
-			const float prob3 = thresholdProbabilities->at(2);
-			const float prob4 = thresholdProbabilities->at(3);
-			const float prob5 = thresholdProbabilities->at(4);
-			const float prob6 = thresholdProbabilities->at(5);
-			const float prob7 = thresholdProbabilities->at(6);
-			const float prob8 = thresholdProbabilities->at(7);
-			const float prob9 = thresholdProbabilities->at(8);
-			const float prob10 = thresholdProbabilities->at(9);
-
+			std::future<void> operations[10];
 
 			auto start = std::chrono::high_resolution_clock::now();
 			for (int i = 0; i < 500; i++)
 			{
-				auto task1 = std::async(run_test_two, prob1, true, &(resultCounter[0]));
-				auto task2 = std::async(run_test_two, prob2, true, &(resultCounter[1]));
-				auto task3 = std::async(run_test_two, prob3, true, &(resultCounter[2]));
-				auto task4 = std::async(run_test_two, prob4, true, &(resultCounter[3]));
-				auto task5 = std::async(run_test_two, prob5, true, &(resultCounter[4]));
+				for (size_t i = 0; i < 5; i++)
+				{
+					operations[i] = std::async(run_test_two, (*thresholdProbabilities)[i], true, &(resultCounter[i]));
+				}
+				for (size_t i = 5; i < 10; i++)
+				{
+					operations[i] = std::async(run_test_two, (*thresholdProbabilities)[i], false, &(resultCounter[i]));
+				}
 
-				auto task6 = std::async(run_test_two, prob6, false, &(resultCounter[5]));
-				auto task7 = std::async(run_test_two, prob7, false, &(resultCounter[6]));
-				auto task8 = std::async(run_test_two, prob8, false, &(resultCounter[7]));
-				auto task9 = std::async(run_test_two, prob9, false, &(resultCounter[8]));
-				auto task10 = std::async(run_test_two, prob10, false, &(resultCounter[9]));
-
-				task10.wait();
 				auto stop = std::chrono::high_resolution_clock::now();
 				print_progress_bar((float)i / 500);
-				std::cout << (((stop - start) / 1000000ll)).count() << " milliseconds" << std::endl;
+				PRINTLN("finished 10 operations in " << (((stop - start) / 1000000ll)).count() << " milliseconds");
+				start = std::chrono::high_resolution_clock::now();
 			}
 		}
 
@@ -456,37 +431,24 @@
 		void test_number_three(array_list<float>* thresholdProbabilities, int resultCounter[10])
 		{
 			if (thresholdProbabilities->size() < 10) return;
-			const float prob1 = thresholdProbabilities->at(0);
-			const float prob2 = thresholdProbabilities->at(1);
-			const float prob3 = thresholdProbabilities->at(2);
-			const float prob4 = thresholdProbabilities->at(3);
-			const float prob5 = thresholdProbabilities->at(4);
-			const float prob6 = thresholdProbabilities->at(5);
-			const float prob7 = thresholdProbabilities->at(6);
-			const float prob8 = thresholdProbabilities->at(7);
-			const float prob9 = thresholdProbabilities->at(8);
-			const float prob10 = thresholdProbabilities->at(9);
-
+			std::future<void> operations[10];
 
 			auto start = std::chrono::high_resolution_clock::now();
 			for (int i = 0; i < 500; i++)
 			{
-				auto task1 = std::async(run_test_three, prob1, true, &resultCounter[0]);
-				auto task2 = std::async(run_test_three, prob2, true, &resultCounter[1]);
-				auto task3 = std::async(run_test_three, prob3, true, &resultCounter[2]);
-				auto task4 = std::async(run_test_three, prob4, true, &resultCounter[3]);
-				auto task5 = std::async(run_test_three, prob5, true, &resultCounter[4]);
+				for (size_t i = 0; i < 5; i++)
+				{
+					operations[i] = std::async(run_test_three, (*thresholdProbabilities)[i], true, &(resultCounter[i]));
+				}
+				for (size_t i = 5; i < 10; i++)
+				{
+					operations[i] = std::async(run_test_three, (*thresholdProbabilities)[i], false, &(resultCounter[i]));
+				}
 
-				auto task6 = std::async(run_test_three, prob6, false, &resultCounter[5]);
-				auto task7 = std::async(run_test_three, prob7, false, &resultCounter[6]);
-				auto task8 = std::async(run_test_three, prob8, false, &resultCounter[7]);
-				auto task9 = std::async(run_test_three, prob9, false, &resultCounter[8]);
-				auto task10 = std::async(run_test_three, prob10, false, &resultCounter[9]);
-
-				task10.wait();
 				auto stop = std::chrono::high_resolution_clock::now();
 				print_progress_bar((float)i / 500);
-				std::cout << (((stop - start) / 1000000ll)).count() << " milliseconds" << std::endl;
+				PRINTLN("finished 10 operations in " << (((stop - start) / 1000000ll)).count() << " milliseconds");
+				start = std::chrono::high_resolution_clock::now();
 			}
 		}
 
@@ -531,17 +493,19 @@
 			int testTwoResults[10] = { 0 };
 			int testThreeResults[10] = { 0 };
 
-			std::cout << "Starting tests..." << std::endl << std::endl;
+			PRINTLN("Starting tests...");
+			PRINT_EMPTY_LINE();
 
-			std::cout << "Test Number One:" << std::endl;
+			PRINTLN("Test Number One:");
 			test_number_one(threshhold1Probabilities.get(), testOneResults);
 			save_csv_test_file("connectivity", threshhold1Probabilities.get(), testOneResults);
 
-			std::cout << "Test Number Two:" << std::endl;
+
+			PRINTLN("Test Number Two:");
 			test_number_two(threshhold2Probabilities.get(), testTwoResults);
 			save_csv_test_file("diameter", threshhold2Probabilities.get(), testTwoResults);
 
-			std::cout << "Test Number Three:" << std::endl;
+			PRINTLN("Test Number Three:");
 			test_number_three(threshhold3Probabilities.get(), testThreeResults);
 			save_csv_test_file("isolated", threshhold3Probabilities.get(), testThreeResults);
 		}
