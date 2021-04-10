@@ -32,17 +32,17 @@
 		* @params vec - The array list to print
 		*/
 		template <class T>
-		void print_array_list(array_list<T> list);
+		void print_array_list(array_list<T>& list);
 
 
 	// ******** Classes ************* //
 
-		enum BFS_COLOR
+		enum class BFS_COLOR
 		{
-			NONE = 0,
-			WHITE = 1,
-			GREY = 2,
-			BLACK = 3
+			none = 0,
+			white = 1,
+			grey = 2,
+			black = 3
 		};
 
 		// deprecated (because tests don't use bfs colors array and parent array)
@@ -55,69 +55,69 @@
 
 		class ListGraph
 		{
-			array_list_2D<int> adj;
-			int vertex_count = 0;
+			array_list_2D<int> adj_;
+			int vertex_count_ = 0;
 		public:
 
 			/**
 			* Creates a graph with [v] edges.
 			* @param v - number of edges for the new graph
 			*/
-			ListGraph(int v);
+			ListGraph(const int &v);
 
 			/**
 			* Getter function for the vertex number.
 			* @returns const int& - readonly property of the vertex number.
 			*/
-			const int& get_size();
+			const int& get_size() const;
 
 			/**
 			* Add an edge from specified source to destination
 			* 
-			* @param (int) source - The source node
-			* @param (int) destination - The source destination
+			* @param source - The source node
+			* @param destination - The source destination
 			* 
 			* @return ListGraph& - returns a reference to the current graph for chaining commands
 			*/
-			ListGraph& addEdge(int source, int destination);
+			ListGraph& add_edge(const int& source, const int& destination);
 
 			/**
 			* Randomize the current graph - takes the lower half of the matrix and inserts it (which means (V^2)/2 - V) => O(V^2)
 			* 
-			* @param (float) p - the probability of an edge to be created between two vertice
+			* @param p - the probability of an edge to be created between two vertice
 			* @return ListGraph& - returns a reference to the current graph for chaining commands
 			*/
-			ListGraph& randomize(float p);
+			ListGraph& randomize(const float& p);
 
 			/**
 			* Run BFS algorithm on the current graph
 			* If the graph is empty it returns null.
 			* 
-			* @param startNode - where to start the BFS algorithm from
+			* @param start_node - where to start the BFS algorithm from
 			* 
 			* @returns std::unique_ptr<array_list<int>> - a smart pointer containing a distance array from the start node to each other nodes
 			*/
-			std::unique_ptr<array_list<int>> BFS(int startNode);
+			std::unique_ptr<array_list<int>> BFS(const int& start_node) const;
 
 			/**
 			* Calculates the diameter of the current graph
 			* @returns int - The diameter of the graph OR (0) if the graph is empty
 			*/
-			int calc_diameter();
+			int calc_diameter() const;
 
 			/**
 			* Checks if there's a node with no connections to it.
 			* @returns bool - true if found at least one node
 			*/
-			bool is_isolated();
+			bool is_isolated() const;
 
 			/**
 			* Checks if the graph has only one connected component
 			* @returns True if the graph is Connected.
 			*/
-			bool connectivity();
+			bool connectivity() const;
 
-			friend std::ostream& operator<<(std::ostream& os, const ListGraph& dt);
+			friend std::ostream& operator<<(std::ostream& os, const ListGraph& graph);
 		};
 
 
@@ -127,7 +127,7 @@
 		* Prints a nice loading bar.
 		* @param progress - a number between 0 to 1 that represents the current progress.
 		*/
-		void print_progress_bar(float progress);
+		void print_progress_bar(const float &progress);
 
 		/**
 		* Creates an array of 10 probabilities
@@ -136,22 +136,22 @@
 		*/
 		std::unique_ptr<array_list<float>> create_threshold_probabilities(float threshold);
 
-		void run_test_one(double p, bool expectedResult, int* resultCounter);
-		void test_number_one(array_list<float>* thresholdProbabilities, int resultCounter[10]);
+		void run_test_one(double p, bool expected_result, int* result_counter);
+		void test_number_one(array_list<float>* threshold_probabilities, int result_counter[10]);
 
-		void run_test_two(double p, bool largerThanTwo, int* resultCounter);
-		void test_number_two(array_list<float>* thresholdProbabilities, int resultCounter[10]);
+		void run_test_two(const double& p, const bool& larger_than_two, int* result_counter);
+		void test_number_two(array_list<float>* threshold_probabilities, int result_counter[10]);
 
-		void run_test_three(double p, bool expectedResult, int* resultCounter);
-		void test_number_three(array_list<float>* thresholdProbabilities, int resultCounter[10]);
+		void run_test_three(const double& p, const bool& expectedResult, int* result_counter);
+		void test_number_three(array_list<float>* threshold_probabilities, int result_counter[10]);
 
 		/**
-		* Creates a csv file of the test results
+		* Creates a csv file of the test result_counter
 		* @param name - The name of the file to be saved.
-		* @param pArr - The array of the probabilities tested with.
-		* @param results[10] - An array of size 10 of the results for each probability.
+		* @param p_arr - The array of the probabilities tested with.
+		* @param result_counter - An array of size 10 of the results for each probability.
 		*/
-		void save_csv_test_file(std::string name, array_list<float>* pArr, int results[10]);
+		void save_csv_test_file(const std::string& name, array_list<float>* p_arr, int result_counter[10]);
 
 		/**
 		* Serves as the main function to run all tests in series.
@@ -169,7 +169,7 @@
 	// ******** Print Functions ************* //
 
 		template <class T>
-		void print_array_list(array_list<T> list)
+		void print_array_list(array_list<T>& list)
 		{
 			std::cout << "[";
 			int i = 0;
@@ -187,7 +187,7 @@
 
 		std::ostream& operator<<(std::ostream& os, const ListGraph& graph)
 		{
-			for (auto& col : graph.adj)
+			for (auto& col : graph.adj_)
 			{
 				os << "[";
 				int i = 0;
@@ -203,18 +203,18 @@
 			return os;
 		}
 
-		void print_progress_bar(float progress)
+		void print_progress_bar(const float &progress)
 		{
-			int barWidth = 100;
+			const int bar_width = 100;
 
 			std::cout << "[";
-			int pos = barWidth * progress;
-			for (int i = 0; i < barWidth; ++i) {
+			const int pos = bar_width * progress;
+			for (int i = 0; i < bar_width; ++i) {
 				if (i < pos) std::cout << "=";
 				else if (i == pos) std::cout << ">";
 				else std::cout << " ";
 			}
-			std::cout << "] " << int(progress * 100.0) << " %\r";
+			std::cout << "] " << static_cast<int>(progress * 100.0) << " %\r";
 			std::cout.flush();
 			std::cout << std::endl;
 		}
@@ -222,83 +222,83 @@
 
 	// ******** List Graph Definitions ****** //
 
-		ListGraph::ListGraph(int v)
+		ListGraph::ListGraph(const int &v)
 		{
-			this->vertex_count = v;
-			for (size_t i = 0; i < this->vertex_count; i++)
+			this->vertex_count_ = v;
+			for (size_t i = 0; i < this->vertex_count_; i++)
 			{
 				array_list<int> v;
-				this->adj.push_back(v);
+				this->adj_.push_back(v);
 			}
 		}
 
-		const int& ListGraph::get_size()
+		const int& ListGraph::get_size() const
 		{
-			return this->vertex_count;
+			return this->vertex_count_;
 		}
 
-		ListGraph& ListGraph::addEdge(int source, int destination)
+		ListGraph& ListGraph::add_edge(const int &source, const int &destination)
 		{
-			this->adj.at(source).push_back(destination);
-			this->adj.at(destination).push_back(source);
+			this->adj_.at(source).push_back(destination);
+			this->adj_.at(destination).push_back(source);
 			return *this;
 		}
 
-		ListGraph& ListGraph::randomize(float p)
+		ListGraph& ListGraph::randomize(const float &p)
 		{
-			for (size_t i = 1; i < this->vertex_count; i++)
+			for (size_t i = 1; i < this->vertex_count_; i++)
 			{
 				for (size_t j = 0; j < i; j++)
 				{
 					//generate random number between 0 to 1. If the number is smaller than p, we add the edge.
-					if (((float)rand() / RAND_MAX) < p)
+					if ((static_cast<float>(rand()) / RAND_MAX) < p)
 					{
-						this->addEdge(i, j);
+						this->add_edge(i, j);
 					}
 				}
 			}
 			return *this;
 		}
 
-		std::unique_ptr<array_list<int>> ListGraph::BFS(int startNode)
+		std::unique_ptr<array_list<int>> ListGraph::BFS(const int &start_node) const
 		{
-			if (this->vertex_count == 0) return nullptr;
+			if (this->vertex_count_ == 0) return nullptr;
 
 
-			array_list<BFS_COLOR> colors(this->vertex_count, BFS_COLOR::WHITE);
-			std::unique_ptr<array_list<int>> dist = std::make_unique<array_list<int>>(this->vertex_count, -1);
+			array_list<BFS_COLOR> colors(this->vertex_count_, BFS_COLOR::white);
+			std::unique_ptr<array_list<int>> dist = std::make_unique<array_list<int>>(this->vertex_count_, -1);
 
-			colors.at(startNode) = BFS_COLOR::GREY;
-			dist->at(startNode) = 0;
+			colors.at(start_node) = BFS_COLOR::grey;
+			dist->at(start_node) = 0;
 
 			std::queue<int> q;
-			q.push(startNode);
+			q.push(start_node);
 
 			while (!q.empty())
 			{
-				auto currentNode = q.front();
-				for (const auto& node : this->adj.at(currentNode))
+				const auto& current_node = q.front();
+				for (const auto& node : this->adj_.at(current_node))
 				{
 					if (node < 0) continue;
-					if (colors.at(node) == BFS_COLOR::WHITE)
+					if (colors.at(node) == BFS_COLOR::white)
 					{
-						colors.at(node) = BFS_COLOR::GREY;
-						dist->at(node) = dist->at(currentNode) + 1;
+						colors.at(node) = BFS_COLOR::grey;
+						dist->at(node) = dist->at(current_node) + 1;
 						q.push(node);
 					}
 				}
 				q.pop();
-				colors.at(currentNode) = BFS_COLOR::BLACK;
+				colors.at(current_node) = BFS_COLOR::black;
 			}
 			return dist;
 		}
 
-		int ListGraph::calc_diameter()
+		int ListGraph::calc_diameter() const
 		{
-			if (this->vertex_count == 0) return 0;
+			if (this->vertex_count_ == 0) return 0;
 			auto max = 0;
 
-			for (size_t i = 0; i < this->vertex_count; i++)
+			for (size_t i = 0; i < this->vertex_count_; i++)
 			{
 				auto dist = BFS(i);
 				for (const auto& item : *dist)
@@ -310,31 +310,21 @@
 			return max;
 		}
 
-		bool ListGraph::is_isolated()
+		bool ListGraph::is_isolated() const
 		{
-			for (const auto& item : this->adj)
-			{
-				if (item.empty())
-					return 1;
-			}
-			return 0;
+			return std::any_of(this->adj_.begin(), this->adj_.end(), [](const array_list<int>& item) { return item.empty(); });
 		}
 
-		bool ListGraph::connectivity()
+		bool ListGraph::connectivity() const
 		{
-			auto dist = BFS(0);
-			for (const auto& item : *dist)
-			{
-				if (item == -1)
-					return false;
-			}
-			return true;
+			const auto dist = BFS(0);
+			return std::all_of(dist->begin(), dist->end(), [](const int& item) { return item != -1; });
 		}
 
 
 	// ******** Test Definitions ************ //
 
-		std::unique_ptr<array_list<float>> create_threshold_probabilities(float threshold)
+		std::unique_ptr<array_list<float>> create_threshold_probabilities(const float threshold)
 		{
 			std::unique_ptr<array_list<float>> list = std::make_unique<array_list<float>>(10);
 			auto tenPercent = threshold / 10;
@@ -351,18 +341,18 @@
 			return list;
 		}
 
-		void run_test_one(double p, bool expectedResult, int* resultCounter)
+		void run_test_one(const double p, const bool expected_result, int* result_counter)
 		{
 			auto g = ListGraph(1000);
 			g.randomize(p);
 			bool result = g.connectivity();
-			if(result == expectedResult)
-				(*resultCounter)++;
+			if(result == expected_result)
+				(*result_counter)++;
 		}
 
-		void test_number_one(array_list<float>* thresholdProbabilities, int resultCounter[10])
+		void test_number_one(array_list<float>* threshold_probabilities, int result_counter[10])
 		{
-			if (thresholdProbabilities->size() < 10) return;
+			if (threshold_probabilities->size() < 10) return;
 
 			auto start = std::chrono::high_resolution_clock::now();
 			std::future<void> operations[10];
@@ -371,33 +361,33 @@
 			{
 				for (size_t i = 0; i < 5; i++)
 				{
-					operations[i] = std::async(run_test_one, (*thresholdProbabilities)[i], false, &(resultCounter[i]));
+					operations[i] = std::async(std::launch::async, run_test_one, (*threshold_probabilities)[i], false, &(result_counter[i]));
 				}
 				for (size_t i = 5; i < 10; i++)
 				{
-					operations[i] = std::async(run_test_one, (*thresholdProbabilities)[i], true, &(resultCounter[i]));
+					operations[i] = std::async(std::launch::async, run_test_one, (*threshold_probabilities)[i], true, &(result_counter[i]));
 				}
 
 				auto stop = std::chrono::high_resolution_clock::now();
-				print_progress_bar((float)i / 500);
+				print_progress_bar(static_cast<float>(i) / 500);
 				PRINTLN("finished 10 operations in " << (((stop - start) / 1000000ll)).count() << " milliseconds");
 				start = std::chrono::high_resolution_clock::now();
 			}
 		}
 
-		void run_test_two(double p, bool largerThanTwo, int* resultCounter)
+		void run_test_two(const double& p, const bool& larger_than_two, int* result_counter)
 		{
 			auto g = ListGraph(1000);
 			g.randomize(p);
 			int diam = g.calc_diameter();
 			diam = diam == -1 ? INT_MAX : diam;
-			if(largerThanTwo ? diam > 2 : diam == 2)
-				(*resultCounter)++;
+			if(larger_than_two ? diam > 2 : diam == 2)
+				(*result_counter)++;
 		}
 
-		void test_number_two(array_list<float>* thresholdProbabilities, int resultCounter[10])
+		void test_number_two(array_list<float>* threshold_probabilities, int result_counter[10])
 		{
-			if (thresholdProbabilities->size() < 10) return;
+			if (threshold_probabilities->size() < 10) return;
 			std::future<void> operations[10];
 
 			auto start = std::chrono::high_resolution_clock::now();
@@ -405,32 +395,32 @@
 			{
 				for (size_t i = 0; i < 5; i++)
 				{
-					operations[i] = std::async(run_test_two, (*thresholdProbabilities)[i], true, &(resultCounter[i]));
+					operations[i] = std::async(std::launch::async, run_test_two, (*threshold_probabilities)[i], true, &(result_counter[i]));
 				}
 				for (size_t i = 5; i < 10; i++)
 				{
-					operations[i] = std::async(run_test_two, (*thresholdProbabilities)[i], false, &(resultCounter[i]));
+					operations[i] = std::async(std::launch::async, run_test_two, (*threshold_probabilities)[i], false, &(result_counter[i]));
 				}
 
 				auto stop = std::chrono::high_resolution_clock::now();
-				print_progress_bar((float)i / 500);
+				print_progress_bar(static_cast<float>(i) / 500);
 				PRINTLN("finished 10 operations in " << (((stop - start) / 1000000ll)).count() << " milliseconds");
 				start = std::chrono::high_resolution_clock::now();
 			}
 		}
 
-		void run_test_three(double p, bool expectedResult, int* resultCounter)
+		void run_test_three(const double& p, const bool& expectedResult, int* result_counter)
 		{
 			auto g = ListGraph(1000);
 			g.randomize(p);
 			if(g.is_isolated() == expectedResult)
-				(*resultCounter)++;
+				(*result_counter)++;
 
 		}
 
-		void test_number_three(array_list<float>* thresholdProbabilities, int resultCounter[10])
+		void test_number_three(array_list<float>* threshold_probabilities, int result_counter[10])
 		{
-			if (thresholdProbabilities->size() < 10) return;
+			if (threshold_probabilities->size() < 10) return;
 			std::future<void> operations[10];
 
 			auto start = std::chrono::high_resolution_clock::now();
@@ -438,38 +428,38 @@
 			{
 				for (size_t i = 0; i < 5; i++)
 				{
-					operations[i] = std::async(run_test_three, (*thresholdProbabilities)[i], true, &(resultCounter[i]));
+					operations[i] = std::async(std::launch::async, run_test_three, (*threshold_probabilities)[i], true, &(result_counter[i]));
 				}
 				for (size_t i = 5; i < 10; i++)
 				{
-					operations[i] = std::async(run_test_three, (*thresholdProbabilities)[i], false, &(resultCounter[i]));
+					operations[i] = std::async(std::launch::async, run_test_three, (*threshold_probabilities)[i], false, &(result_counter[i]));
 				}
 
 				auto stop = std::chrono::high_resolution_clock::now();
-				print_progress_bar((float)i / 500);
+				print_progress_bar(static_cast<float>(i) / 500);
 				PRINTLN("finished 10 operations in " << (((stop - start) / 1000000ll)).count() << " milliseconds");
 				start = std::chrono::high_resolution_clock::now();
 			}
 		}
 
-		void save_csv_test_file(std::string name, array_list<float>* pArr, int results[10])
+		void save_csv_test_file(const std::string& name, array_list<float>* p_arr, int result_counter[10])
 		{
-			const char SEPERATOR = ',';
+			const char SEPARATOR = ',';
 			std::ofstream fout;
 			fout.open(name + "_test.csv", std::ios::out | std::ofstream::trunc);
 
 			// first line
-			fout << "Probability" << SEPERATOR;
-			for (auto p : *pArr)
+			fout << "Probability" << SEPARATOR;
+			for (auto p : *p_arr)
 			{
-				fout << p << SEPERATOR;
+				fout << p << SEPARATOR;
 			}
 			fout << std::endl;
 
-			fout << "Simulation results" << SEPERATOR;
+			fout << "Simulation result_counter" << SEPARATOR;
 			for (int i = 0; i < 10; i++)
 			{
-				fout << ((float)(results[i]) / 500) << SEPERATOR;
+				fout << ((float)(result_counter[i]) / 500) << SEPARATOR;
 			}
 
 			fout.close();
@@ -477,17 +467,17 @@
 
 		void run_tests()
 		{
-			std::srand(std::time(NULL));
+			std::srand(std::time(nullptr));
 
-			int V = 1000;
+			const int v = 1000;
 
-			float threshold1 = (float)std::log(V) / V;
-			float threshold2 = std::sqrt(2 * threshold1);
-			float threshold3 = threshold1;
+			const float threshold1 = static_cast<float>(std::log(v)) / v;
+			const float threshold2 = std::sqrt(2 * threshold1);
+			const float threshold3 = threshold1;
 
-			std::unique_ptr<array_list<float>> threshhold1Probabilities = create_threshold_probabilities(threshold1);
-			std::unique_ptr<array_list<float>> threshhold2Probabilities = create_threshold_probabilities(threshold2);
-			std::unique_ptr<array_list<float>> threshhold3Probabilities = create_threshold_probabilities(threshold3);
+			const std::unique_ptr<array_list<float>> threshold1_probabilities = create_threshold_probabilities(threshold1);
+			const std::unique_ptr<array_list<float>> threshold2_probabilities = create_threshold_probabilities(threshold2);
+			const std::unique_ptr<array_list<float>> threshold3_probabilities = create_threshold_probabilities(threshold3);
 
 			int testOneResults[10] = { 0 };
 			int testTwoResults[10] = { 0 };
@@ -497,17 +487,17 @@
 			PRINT_EMPTY_LINE();
 
 			PRINTLN("Test Number One:");
-			test_number_one(threshhold1Probabilities.get(), testOneResults);
-			save_csv_test_file("connectivity", threshhold1Probabilities.get(), testOneResults);
+			test_number_one(threshold1_probabilities.get(), testOneResults);
+			save_csv_test_file("connectivity", threshold1_probabilities.get(), testOneResults);
 
 
 			PRINTLN("Test Number Two:");
-			test_number_two(threshhold2Probabilities.get(), testTwoResults);
-			save_csv_test_file("diameter", threshhold2Probabilities.get(), testTwoResults);
+			test_number_two(threshold2_probabilities.get(), testTwoResults);
+			save_csv_test_file("diameter", threshold2_probabilities.get(), testTwoResults);
 
 			PRINTLN("Test Number Three:");
-			test_number_three(threshhold3Probabilities.get(), testThreeResults);
-			save_csv_test_file("isolated", threshhold3Probabilities.get(), testThreeResults);
+			test_number_three(threshold3_probabilities.get(), testThreeResults);
+			save_csv_test_file("isolated", threshold3_probabilities.get(), testThreeResults);
 		}
 		
 
