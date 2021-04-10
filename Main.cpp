@@ -151,7 +151,7 @@
 		* @param p_arr - The array of the probabilities tested with.
 		* @param result_counter - An array of size 10 of the results for each probability.
 		*/
-		void save_csv_test_file(const std::string& name, array_list<float>* p_arr, int result_counter[10]);
+		void save_csv_test_file(const std::string& name, array_list<float>* p_arr, const int result_counter[10]);
 
 		/**
 		* Serves as the main function to run all tests in series.
@@ -442,11 +442,11 @@
 			}
 		}
 
-		void save_csv_test_file(const std::string& name, array_list<float>* p_arr, int result_counter[10])
+		void save_csv_test_file(const std::string& name, array_list<float>* p_arr, const int result_counter[10])
 		{
 			const char SEPARATOR = ',';
 			std::ofstream fout;
-			fout.open(name + "_test.csv", std::ios::out | std::ofstream::trunc);
+			fout.open(name + "_test.csv", std::ofstream::out | std::ofstream::trunc);
 
 			// first line
 			fout << "Probability" << SEPARATOR;
