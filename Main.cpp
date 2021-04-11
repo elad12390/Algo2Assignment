@@ -159,6 +159,12 @@
 		*/
 		void save_csv_test_file(const std::string& name, array_list<float>* p_arr, const int result_counter[10]);
 
+		unsigned int ask_which_test_to_run();
+
+		void run_test1();
+		void run_test2();
+		void run_test3();
+
 		/**
 		* Serves as the main function to run all tests in series.
 		*/
@@ -480,6 +486,7 @@
 			int testOneResults[10] = { 0 };
 			PRINTLN("Starting test...");
 			PRINT_EMPTY_LINE();
+			
 			PRINTLN("Test Number One:");
 			test_number_one(threshold1_probabilities.get(), testOneResults);
 			save_csv_test_file("connectivity", threshold1_probabilities.get(), testOneResults);
@@ -516,6 +523,8 @@
 		
 		void run_tests(int num)
 		{
+			if (!num) return;
+			
 			if (num & TEST_1)
 				run_test1();
 			if (num & TEST_2)
@@ -524,12 +533,36 @@
 				run_test3();
 		}
 		
-
+		unsigned int ask_which_test_to_run()
+		{
+			std::string input;
+			unsigned int result = 0;
+			PRINT_EMPTY_LINE();
+			PRINTLN("Please enter the tests you want to run");
+			PRINTLN("\tIn this format: [0 OR 1][0 OR 1][0 OR 1]");
+			PRINTLN("\tFor example: 101 will run Test1 and Test3");
+			
+			std::cin >> input;
+			for (auto& letter : input)
+			{
+				if (letter != '1' && letter != '0')
+				{
+					PRINTLN("Error: The number inserted is not binary. exiting program.");
+					return -1;
+				}
+				
+				result *= 2;
+				result += letter == '1' ? 1 : 0;
+			}
+			
+			return result;
+		}
 	// ******** Main ************************ //
 
 	int main()
 	{
-		run_tests(TEST_1 | TEST_3);
+		const unsigned int tests_to_run = ask_which_test_to_run();
+		run_tests(tests_to_run);
 		return 0;
 	}
 
