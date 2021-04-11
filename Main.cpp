@@ -562,6 +562,8 @@
 	int main()
 	{
 		const unsigned int tests_to_run = ask_which_test_to_run();
+		if (tests_to_run < 0) return 0;
+
 		run_tests(tests_to_run);
 		return 0;
 	}
