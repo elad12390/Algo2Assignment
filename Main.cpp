@@ -45,7 +45,7 @@
 			black = 3
 		};
 		
-		enum class TestToRun {
+		enum TestToRun {
 			TEST_1 = 100,
 			TEST_2 = 010,
 			TEST_3 = 001,
@@ -516,12 +516,12 @@
 		
 		void run_tests(int num)
 		{
-			if (num & 100)
-				run_test1;
-			if (num & 010)
-				run_test2;
-			if (num & 001)
-				run_test3;
+			if (num & TEST_1)
+				run_test1();
+			if (num & TEST_2)
+				run_test2();
+			if (num & TEST_3)
+				run_test3();
 		}
 		
 
@@ -529,7 +529,7 @@
 
 	int main()
 	{
-		run_tests();
+		run_tests(TEST_1 | TEST_3);
 		return 0;
 	}
 
