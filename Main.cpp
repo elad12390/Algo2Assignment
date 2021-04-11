@@ -7,9 +7,9 @@
 #include <queue>
 #include <fstream>
 
-
 #define PRINTLN(x) std::cout << x << std::endl
 #define PRINT_EMPTY_LINE() std::cout << std::endl
+
 
 // ******************************** Declarations ****************************** //
 
@@ -44,6 +44,12 @@
 			grey = 2,
 			black = 3
 		};
+		
+		enum class TestToRun {
+			TEST_1 = 100,
+			TEST_2 = 010,
+			TEST_3 = 001,
+		};
 
 		// deprecated (because tests don't use bfs colors array and parent array)
 		struct BFSResult
@@ -55,7 +61,7 @@
 
 		class ListGraph
 		{
-			array_list_2D<int> adj_;
+		    array_list_2D<int> adj_;
 			int vertex_count_ = 0;
 		public:
 
@@ -156,7 +162,7 @@
 		/**
 		* Serves as the main function to run all tests in series.
 		*/
-		void run_tests();
+		void run_tests(int num);
 
 
 // ******************************** Declarations End ****************************** //
@@ -465,39 +471,57 @@
 			fout.close();
 		}
 
-		void run_tests()
+		void run_test1() //connectivity
 		{
 			std::srand(std::time(nullptr));
-
 			const int v = 1000;
-
 			const float threshold1 = static_cast<float>(std::log(v)) / v;
-			const float threshold2 = std::sqrt(2 * threshold1);
-			const float threshold3 = threshold1;
-
 			const std::unique_ptr<array_list<float>> threshold1_probabilities = create_threshold_probabilities(threshold1);
-			const std::unique_ptr<array_list<float>> threshold2_probabilities = create_threshold_probabilities(threshold2);
-			const std::unique_ptr<array_list<float>> threshold3_probabilities = create_threshold_probabilities(threshold3);
-
 			int testOneResults[10] = { 0 };
-			int testTwoResults[10] = { 0 };
-			int testThreeResults[10] = { 0 };
-
-			PRINTLN("Starting tests...");
+			PRINTLN("Starting test...");
 			PRINT_EMPTY_LINE();
-
 			PRINTLN("Test Number One:");
 			test_number_one(threshold1_probabilities.get(), testOneResults);
 			save_csv_test_file("connectivity", threshold1_probabilities.get(), testOneResults);
+		}
 
-
+		void run_test2() //diameter
+		{
+			std::srand(std::time(nullptr));
+			const int v = 1000;
+			const float threshold2 = std::sqrt(2 * static_cast<float>(std::log(v)) / v);
+			const std::unique_ptr<array_list<float>> threshold2_probabilities = create_threshold_probabilities(threshold2);
+			int testTwoResults[10] = { 0 };
+			PRINTLN("Starting test...");
+			PRINT_EMPTY_LINE();
 			PRINTLN("Test Number Two:");
 			test_number_two(threshold2_probabilities.get(), testTwoResults);
 			save_csv_test_file("diameter", threshold2_probabilities.get(), testTwoResults);
 
+		}
+		
+		void run_test3() //is_ioslated
+		{
+			std::srand(std::time(nullptr));
+			const int v = 1000;
+			const float threshold3 = static_cast<float>(std::log(v)) / v;
+			const std::unique_ptr<array_list<float>> threshold3_probabilities = create_threshold_probabilities(threshold3);
+			int testThreeResults[10] = { 0 };
+			PRINTLN("Starting test...");
+			PRINT_EMPTY_LINE();
 			PRINTLN("Test Number Three:");
 			test_number_three(threshold3_probabilities.get(), testThreeResults);
 			save_csv_test_file("isolated", threshold3_probabilities.get(), testThreeResults);
+		}
+		
+		void run_tests(int num)
+		{
+			if (num & 100)
+				run_test1;
+			if (num & 010)
+				run_test2;
+			if (num & 001)
+				run_test3;
 		}
 		
 
