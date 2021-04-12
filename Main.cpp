@@ -46,9 +46,9 @@
 		};
 		
 		enum TestToRun {
-			TEST_1 = 100,
-			TEST_2 = 010,
-			TEST_3 = 001,
+			TEST_1 = 0b100,
+			TEST_2 = 0b010,
+			TEST_3 = 0b001,
 		};
 
 		// deprecated (because tests don't use bfs colors array and parent array)
@@ -138,9 +138,11 @@
 		/**
 		* Creates an array of 10 probabilities
 		* @param threshold - the probability to generate according to.
+		* @param downJumpPercentage - (Zoom) the jumping percentage on the probabilities smaller than the threshold
+		* @param upJumpPercentage - (Zoom) the jumping percentage on the probabilities larger than the threshold
 		* @returns A smart pointer to an array with the first 5 numbers smaller than [threshold] and last 5 numbers larger than [threshold]
 		*/
-		std::unique_ptr<array_list<float>> create_threshold_probabilities(float threshold);
+		std::unique_ptr<array_list<float>> create_threshold_probabilities(float threshold, float downJumpPercentage, float upJumpPercentage);
 
 		void run_test_one(double p, bool expected_result, int* result_counter);
 		void test_number_one(array_list<float>* threshold_probabilities, int result_counter[10]);
@@ -336,19 +338,19 @@
 
 	// ******** Test Definitions ************ //
 
-		std::unique_ptr<array_list<float>> create_threshold_probabilities(const float threshold)
+		std::unique_ptr<array_list<float>> create_threshold_probabilities(const float threshold, float downJumpPercentage, float upJumpPercentage)
 		{
 			std::unique_ptr<array_list<float>> list = std::make_unique<array_list<float>>(10);
-			auto tenPercent = threshold / 10;
+			auto onePercent = threshold / 100;
 
 			// smaller than
 			// start from 50% climb up to 90%
 			for (size_t i = 0; i < 5; i++)
-				list.get()->at(i) = (tenPercent * 5 + tenPercent * i);
+				list.get()->at(i) = threshold - (onePercent * downJumpPercentage * (5 - i));
 
 			// start from 110% climb up to 150%
-			for (size_t i = 5; i < 10; i++)
-				list.get()->at(i) = (tenPercent * 6 + tenPercent * i);
+			for (size_t i = 5, j = 0; i < 10; i++, j++)
+				list.get()->at(i) = threshold + (onePercent * upJumpPercentage * (1 + j));
 
 			return list;
 		}
@@ -468,7 +470,7 @@
 			}
 			fout << std::endl;
 
-			fout << "Simulation result_counter" << SEPARATOR;
+			fout << "Simulation Results" << SEPARATOR;
 			for (int i = 0; i < 10; i++)
 			{
 				fout << ((float)(result_counter[i]) / 500) << SEPARATOR;
@@ -482,7 +484,7 @@
 			std::srand(std::time(nullptr));
 			const int v = 1000;
 			const float threshold1 = static_cast<float>(std::log(v)) / v;
-			const std::unique_ptr<array_list<float>> threshold1_probabilities = create_threshold_probabilities(threshold1);
+			const std::unique_ptr<array_list<float>> threshold1_probabilities = create_threshold_probabilities(threshold1, 6, 15);
 			int testOneResults[10] = { 0 };
 			PRINTLN("Starting test...");
 			PRINT_EMPTY_LINE();
@@ -497,11 +499,14 @@
 			std::srand(std::time(nullptr));
 			const int v = 1000;
 			const float threshold2 = std::sqrt(2 * static_cast<float>(std::log(v)) / v);
-			const std::unique_ptr<array_list<float>> threshold2_probabilities = create_threshold_probabilities(threshold2);
+			const std::unique_ptr<array_list<float>> threshold2_probabilities = create_threshold_probabilities(threshold2,3,5);
+			
 			int testTwoResults[10] = { 0 };
+			
 			PRINTLN("Starting test...");
 			PRINT_EMPTY_LINE();
 			PRINTLN("Test Number Two:");
+			
 			test_number_two(threshold2_probabilities.get(), testTwoResults);
 			save_csv_test_file("diameter", threshold2_probabilities.get(), testTwoResults);
 
@@ -512,7 +517,7 @@
 			std::srand(std::time(nullptr));
 			const int v = 1000;
 			const float threshold3 = static_cast<float>(std::log(v)) / v;
-			const std::unique_ptr<array_list<float>> threshold3_probabilities = create_threshold_probabilities(threshold3);
+			const std::unique_ptr<array_list<float>> threshold3_probabilities = create_threshold_probabilities(threshold3,6.5,16);
 			int testThreeResults[10] = { 0 };
 			PRINTLN("Starting test...");
 			PRINT_EMPTY_LINE();
@@ -521,10 +526,10 @@
 			save_csv_test_file("isolated", threshold3_probabilities.get(), testThreeResults);
 		}
 		
-		void run_tests(int num)
+		void run_tests(unsigned int num)
 		{
 			if (!num) return;
-			
+			PRINTLN(TEST_2 << (unsigned int)(num & TEST_2));
 			if (num & TEST_1)
 				run_test1();
 			if (num & TEST_2)
@@ -563,7 +568,7 @@
 	{
 		const unsigned int tests_to_run = ask_which_test_to_run();
 		if (tests_to_run < 0) return 0;
-
+		PRINTLN(tests_to_run);
 		run_tests(tests_to_run);
 		return 0;
 	}
