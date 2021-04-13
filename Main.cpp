@@ -65,112 +65,114 @@
 			int vertex_count_ = 0;
 		public:
 
-			/**
-			* Creates a graph with [v] edges.
-			* @param v - number of edges for the new graph
-			*/
-			ListGraph(const int &v);
+/**
+* Creates a graph with [v] edges.
+* @param v - number of edges for the new graph
+*/
+ListGraph(const int &v);
 
-			/**
-			* Getter function for the vertex number.
-			* @returns const int& - readonly property of the vertex number.
-			*/
-			const int& get_size() const;
+/**
+* Getter function for the vertex number.
+* @returns const int& - readonly property of the vertex number.
+*/
+const int& get_size() const;
 
-			/**
-			* Add an edge from specified source to destination
-			* 
-			* @param source - The source node
-			* @param destination - The source destination
-			* 
-			* @return ListGraph& - returns a reference to the current graph for chaining commands
-			*/
-			ListGraph& add_edge(const int& source, const int& destination);
+/**
+* Add an edge from specified source to destination
+* 
+* @param source - The source node
+* @param destination - The source destination
+* 
+* @return ListGraph& - returns a reference to the current graph for chaining commands
+*/
+ListGraph& add_edge(const int& source, const int& destination);
 
-			/**
-			* Randomize the current graph - takes the lower half of the matrix and inserts it (which means (V^2)/2 - V) => O(V^2)
-			* 
-			* @param p - the probability of an edge to be created between two vertice
-			* @return ListGraph& - returns a reference to the current graph for chaining commands
-			*/
-			ListGraph& randomize(const float& p);
+/**
+* Randomize the current graph - takes the lower half of the matrix and inserts it (which means (V^2)/2 - V) => O(V^2)
+* 
+* @param p - the probability of an edge to be created between two vertice
+* @return ListGraph& - returns a reference to the current graph for chaining commands
+*/
+ListGraph& randomize(const float& p);
 
-			/**
-			* Run BFS algorithm on the current graph
-			* If the graph is empty it returns null.
-			* 
-			* @param start_node - where to start the BFS algorithm from
-			* 
-			* @returns std::unique_ptr<array_list<int>> - a smart pointer containing a distance array from the start node to each other nodes
-			*/
-			std::unique_ptr<array_list<int>> BFS(const int& start_node) const;
+/**
+* Run BFS algorithm on the current graph
+* If the graph is empty it returns null.
+* 
+* @param start_node - where to start the BFS algorithm from
+* 
+* @returns std::unique_ptr<array_list<int>> - a smart pointer containing a distance array from the start node to each other nodes
+*/
+std::unique_ptr<array_list<int>> BFS(const int& start_node) const;
 
-			/**
-			* Calculates the diameter of the current graph
-			* @returns int - The diameter of the graph OR (0) if the graph is empty
-			*/
-			int calc_diameter() const;
+/**
+* Calculates the diameter of the current graph
+* @returns int - The diameter of the graph OR (0) if the graph is empty
+*/
+int calc_diameter() const;
 
-			/**
-			* Checks if there's a node with no connections to it.
-			* @returns bool - true if found at least one node
-			*/
-			bool is_isolated() const;
+/**
+* Checks if there's a node with no connections to it.
+* @returns bool - true if found at least one node
+*/
+bool is_isolated() const;
 
-			/**
-			* Checks if the graph has only one connected component
-			* @returns True if the graph is Connected.
-			*/
-			bool connectivity() const;
+/**
+* Checks if the graph has only one connected component
+* @returns True if the graph is Connected.
+*/
+bool connectivity() const;
 
-			friend std::ostream& operator<<(std::ostream& os, const ListGraph& graph);
-		};
+friend std::ostream& operator<<(std::ostream& os, const ListGraph& graph);
+};
 
 
-	// ******** Tests *************** //
+// ******** Tests *************** //
 
-		/**
-		* Prints a nice loading bar.
-		* @param progress - a number between 0 to 1 that represents the current progress.
-		*/
-		void print_progress_bar(const float &progress);
+/**
+* Prints a nice loading bar.
+* @param progress - a number between 0 to 1 that represents the current progress.
+*/
+void print_progress_bar(const float &progress);
 
-		/**
-		* Creates an array of 10 probabilities
-		* @param threshold - the probability to generate according to.
-		* @param downJumpPercentage - (Zoom) the jumping percentage on the probabilities smaller than the threshold
-		* @param upJumpPercentage - (Zoom) the jumping percentage on the probabilities larger than the threshold
-		* @returns A smart pointer to an array with the first 5 numbers smaller than [threshold] and last 5 numbers larger than [threshold]
-		*/
-		std::unique_ptr<array_list<float>> create_threshold_probabilities(float threshold, float downJumpPercentage, float upJumpPercentage);
+/**
+* Creates an array of 10 probabilities
+* @param threshold - the probability to generate according to.
+* @param downJumpPercentage - (Zoom) the jumping percentage on the probabilities smaller than the threshold
+* @param upJumpPercentage - (Zoom) the jumping percentage on the probabilities larger than the threshold
+* @returns A smart pointer to an array with the first 5 numbers smaller than [threshold] and last 5 numbers larger than [threshold]
+*/
+std::unique_ptr<array_list<float>> create_threshold_probabilities(float threshold, float downJumpPercentage, float upJumpPercentage);
 
-		void run_test_one(double p, bool expected_result, int* result_counter);
-		void test_number_one(array_list<float>* threshold_probabilities, int result_counter[10]);
+void run_test_one(double p, bool expected_result, int* result_counter);
+void test_number_one(array_list<float>* threshold_probabilities, int result_counter[10]);
 
-		void run_test_two(const double& p, const bool& larger_than_two, int* result_counter);
-		void test_number_two(array_list<float>* threshold_probabilities, int result_counter[10]);
+void run_test_two(const double& p, const bool& larger_than_two, int* result_counter);
+void test_number_two(array_list<float>* threshold_probabilities, int result_counter[10]);
 
-		void run_test_three(const double& p, const bool& expectedResult, int* result_counter);
-		void test_number_three(array_list<float>* threshold_probabilities, int result_counter[10]);
+void run_test_three(const double& p, const bool& expectedResult, int* result_counter);
+void test_number_three(array_list<float>* threshold_probabilities, int result_counter[10]);
 
-		/**
-		* Creates a csv file of the test result_counter
-		* @param name - The name of the file to be saved.
-		* @param p_arr - The array of the probabilities tested with.
-		* @param result_counter - An array of size 10 of the results for each probability.
-		*/
-		void save_csv_test_file(const std::string& name, array_list<float>* p_arr, const int result_counter[10]);
+/**
+* Creates a csv file of the test result_counter
+* @param name - The name of the file to be saved.
+* @param p_arr - The array of the probabilities tested with.
+* @param result_counter - An array of size 10 of the results for each probability.
+*/
+void save_csv_test_file(const std::string& name, array_list<float>* p_arr, const int result_counter[10]);
 
-		unsigned int ask_which_test_to_run();
+unsigned int ask_which_test_to_run();
 
-		void run_test1();
-		void run_test2();
-		void run_test3();
+void run_test1();
+void run_test2();
+void run_test3();
 
-		/**
-		* Serves as the main function to run all tests in series.
-		*/
-		void run_tests(int num);
+/**
+ * Serves as the main function to run all tests in series, receives a number representing the tests to run or our flags enum TestToRun,
+ * For example I am a programmer and I would like to run test 1 and two I would write run_tests(TestToRun::TEST_1 | TestToRun::TEST_2);
+          the OR operator will connect these two numbers and we will get 110 which we then check which bit is a one and a zero and run the tests respectively.
+*/
+void run_tests(int num);
 
 
 // ******************************** Declarations End ****************************** //
